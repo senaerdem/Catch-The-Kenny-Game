@@ -12,6 +12,8 @@ class ViewController: UIViewController {
     var score = 0
     var counter = 0
     var timer = Timer()
+    var kennyArray = [UIImageView]()
+    var hideTimer = Timer()
     
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var scoreLabel: UILabel!
@@ -32,10 +34,6 @@ class ViewController: UIViewController {
         
         scoreLabel.text = "Score: \(score)"
         
-        counter = 30
-        timeLabel.text = "\(counter)"
-        
-        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerFunction), userInfo: nil, repeats: true)
         
         kenny1.isUserInteractionEnabled = true
         kenny2.isUserInteractionEnabled = true
@@ -67,11 +65,28 @@ class ViewController: UIViewController {
         kenny8.addGestureRecognizer(recognizer8)
         kenny9.addGestureRecognizer(recognizer9)
         
+        kennyArray = [kenny1, kenny2, kenny3, kenny4, kenny5, kenny6, kenny7, kenny8, kenny9]
+        
+        counter = 30
+        timeLabel.text = "\(counter)"
+        
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerFunction), userInfo: nil, repeats: true)
+        hideTimer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(hideKenny), userInfo: nil, repeats: true)
+        
+        hideKenny()
     }
     
     @objc func increaseScore() {
         score = score + 1
         scoreLabel.text = "Score: \(score)"
+    }
+    
+    @objc func hideKenny() {
+        for kenny in kennyArray {
+            kenny.isHidden = true
+        }
+        let random = Int(arc4random_uniform(UInt32(kennyArray.count - 1)))
+        kennyArray[random].isHidden = false
     }
     
     @objc func timerFunction() {
@@ -81,6 +96,11 @@ class ViewController: UIViewController {
         if counter == 0 {
             timer.invalidate()
             timeLabel.text = "Time's Over"
+            hideTimer.invalidate()
+            
+            for kenny in kennyArray {
+                kenny.isHidden = true
+            }
             
             // Alert
             let alert = UIAlertController(title: "Time's Up", message: "Do you want to play again?", preferredStyle: UIAlertController.Style.alert)

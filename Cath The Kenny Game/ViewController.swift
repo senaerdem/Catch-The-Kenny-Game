@@ -10,6 +10,8 @@ import UIKit
 class ViewController: UIViewController {
     
     var score = 0
+    var counter = 0
+    var timer = Timer()
     
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var scoreLabel: UILabel!
@@ -29,6 +31,11 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         scoreLabel.text = "Score: \(score)"
+        
+        counter = 30
+        timeLabel.text = "\(counter)"
+        
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerFunction), userInfo: nil, repeats: true)
         
         kenny1.isUserInteractionEnabled = true
         kenny2.isUserInteractionEnabled = true
@@ -66,7 +73,25 @@ class ViewController: UIViewController {
         score = score + 1
         scoreLabel.text = "Score: \(score)"
     }
-
-
+    
+    @objc func timerFunction() {
+        timeLabel.text = "\(counter)"
+        counter = counter - 1
+        
+        if counter == 0 {
+            timer.invalidate()
+            timeLabel.text = "Time's Over"
+            
+            // Alert
+            let alert = UIAlertController(title: "Time's Up", message: "Do you want to play again?", preferredStyle: UIAlertController.Style.alert)
+            let okButton = UIAlertAction(title: "OK", style: UIAlertAction.Style.cancel, handler: nil)
+            let replayButton = UIAlertAction(title: "Replay", style: UIAlertAction.Style.default) { UIAlertAction in
+                // replay function
+            }
+            alert.addAction(okButton)
+            alert.addAction(replayButton)
+            self.present(alert, animated: true, completion: nil)
+        }
+    }
 }
 

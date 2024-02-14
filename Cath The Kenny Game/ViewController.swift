@@ -14,6 +14,7 @@ class ViewController: UIViewController {
     var timer = Timer()
     var kennyArray = [UIImageView]()
     var hideTimer = Timer()
+    var highScore = 0
     
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var scoreLabel: UILabel!
@@ -34,6 +35,18 @@ class ViewController: UIViewController {
         
         scoreLabel.text = "Score: \(score)"
         
+        // highscore check
+        let storedHighscore = UserDefaults.standard.object(forKey: "highscore")
+        
+        if storedHighscore == nil {
+            highScore = 0
+            highscoreLabel.text = "Highscore: \(highScore)"
+        }
+        
+        if let newScore = storedHighscore as? Int {
+            highScore = 0
+            highscoreLabel.text = "Highscore: \(highScore)"
+        }
         
         kenny1.isUserInteractionEnabled = true
         kenny2.isUserInteractionEnabled = true
@@ -100,6 +113,13 @@ class ViewController: UIViewController {
             
             for kenny in kennyArray {
                 kenny.isHidden = true
+            }
+            
+            // High Score
+            if self.score > self.highScore {
+                self.highScore = self.score
+                highscoreLabel.text = "Highscore: \(self.highScore)"
+                UserDefaults.standard.setValue(self.highScore, forKey: "highscore")
             }
             
             // Alert
